@@ -1270,9 +1270,14 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
     let play = 0, p0t = 0, lockT = 0, lastUp = 0, uStart = 0, T1e = 0, rel = false;
     const REL = 0.2;
     const T1 = 0.4, HOLD = 0.15;
-    const stopEv = (e) => { if (e.cancelable) e.preventDefault(); };
+    const WGAP = 120;
+    let lastWh = 0;
+    const stopEv = (e) => { if (e.type === "wheel") lastWh = performance.now(); if (e.cancelable) e.preventDefault(); };
+    const drain = (e) => { const now = performance.now(), gap = now - lastWh; lastWh = now;
+      if (gap < WGAP) { if (e.cancelable) e.preventDefault(); } else removeEventListener("wheel", drain, { passive: false }); };
     const lock = (on_) => { const hs = document.documentElement.style; hs.overflow = on_ ? "hidden" : ""; hs.scrollbarGutter = on_ ? "stable" : "";
       for (const ev of ["wheel", "touchmove"]) on_ ? addEventListener(ev, stopEv, { passive: false }) : removeEventListener(ev, stopEv, { passive: false });
+      removeEventListener("wheel", drain, { passive: false }); if (!on_ && performance.now() - lastWh < WGAP) addEventListener("wheel", drain, { passive: false });
       clearTimeout(lockT); if (on_) lockT = setTimeout(() => lock(false), (T2 + 1) * 1000); };
     const startPlay = () => { if (!on || play === 1) return; play = 1; rel = false; p0t = performance.now(); lock(true); uStart = lastUp; T1e = T1 * clamp(1 - uStart / DP());
       t.style.translate = ""; const s0 = st.getBoundingClientRect().bottom + PRE() - (t.getBoundingClientRect().top + B - sF);
