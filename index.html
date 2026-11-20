@@ -430,6 +430,8 @@ h3 { font-size: 22px; line-height: 1.4; margin: 0; font-weight: 700; }
   #kit > .thumb-sub { grid-row: 2; margin-top: 1.2em; } #kit > .thumb-body { grid-row: 3; margin-right: 0; }
   .end .hero-catch { justify-self: center; width: max-content; padding-left: 0; }
   .end .hero-catch { font-size: clamp(42px, 3.6vw, 64px); }
+  .end .hero-stage { --sw: min(1534px, 100%, max(min(100%, 570px), calc((100svh - var(--nav-h, 74px) - 410px) * 3.4))); margin-top: calc(var(--sw) * -0.075); }
+  .end .hero-catch { position: relative; z-index: 1; }
   .pc-br { display: inline; }
 }
 footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px; }
