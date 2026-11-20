@@ -1282,7 +1282,22 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
       clearTimeout(lockT); if (on_) lockT = setTimeout(() => lock(false), (T2 + 1) * 1000); };
     const startPlay = () => { if (!on || play === 1) return; play = 1; rel = false; p0t = performance.now(); lock(true); uStart = lastUp; T1e = T1 * clamp(1 - uStart / DP());
       t.style.translate = ""; const s0 = st.getBoundingClientRect().bottom + PRE() - (t.getBoundingClientRect().top + B - sF);
-      scrollTo({ top: scrollY + (DP() + TD() - s0), behavior: "instant" }); upd(); };
+      const y0 = scrollY, tgt = scrollY + (DP() + TD() - s0);
+      scrollTo({ top: tgt, behavior: "instant" }); dl(`play y0=${y0.toFixed(0)} tgt=${tgt.toFixed(0)} y=${scrollY.toFixed(0)}`); if (DBG) for (const ms of [50, 300, 800]) setTimeout(() => dl(`  +${ms}ms y=${scrollY.toFixed(0)}`), ms); upd(); };
+    const DBG = /[?&]dbg/.test(location.search), dlog = [];
+    const dl = (s) => { if (!DBG) return; dlog.push((performance.now() / 1000).toFixed(2) + " " + s); if (dlog.length > 9) dlog.shift(); };
+    if (DBG) { const box = document.createElement("pre"); box.style.cssText = "position:fixed;left:6px;top:60px;z-index:99999;margin:0;padding:6px 8px;font:11px/1.35 ui-monospace,monospace;color:#7f7;background:rgba(0,0,0,.78);pointer-events:none;white-space:pre;border-radius:4px";
+      document.body.appendChild(box);
+      const loop = () => { const tr = t.getBoundingClientRect(), sb = st.getBoundingClientRect(), im = pe.querySelector("img").getBoundingClientRect(), w = cw(), h = w * 0.7;
+        const f = (v) => (+v).toFixed(1);
+        box.textContent = [`${navigator.userAgent.match(/Version\/[\d.]+|Chrome\/[\d.]+/) || ""} ${innerWidth}x${innerHeight} dpr${devicePixelRatio}`,
+          `scrollY ${f(scrollY)}  se ${f(document.scrollingElement.scrollTop)}  vv ${f(visualViewport ? visualViewport.pageTop : -1)}`,
+          `play ${play} rel ${rel} ov "${document.documentElement.style.overflow}" sb ${document.documentElement.style.scrollBehavior || getComputedStyle(document.documentElement).scrollBehavior}`,
+          `plateApex ${f(tr.top + B - sF)}  keyApex ${f(im.top + ARC.apex * h)}  apexEnd ${f(sb.bottom - P - OV)}`,
+          `t.translate "${t.style.translate}"  cs ${getComputedStyle(t).translate}  stB ${f(sb.bottom)}`,
+          `B ${B} sF ${f(sF)} R ${f(R)} P ${f(P)} DP ${DP()} TD ${TD()}`, "--", ...dlog].join("\n");
+        requestAnimationFrame(loop); };
+      requestAnimationFrame(loop); }
     const upd = () => { raf = 0; t.style.translate = ""; const tr = t.getBoundingClientRect(), sb = st.getBoundingClientRect(), W = t.clientWidth, w = cw(), h = w * 0.7;
       const ax = tr.left + W / 2, domeN = tr.top + B - sF;
       t.style.setProperty("--ax", (W / 2).toFixed(1) + "px"); clip();
@@ -1290,7 +1305,7 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
       if (!on) play = 0; else if (play === 2 && sR < DP() * 0.5) play = 0; else if (play === 0 && sR >= DP() - 0.5) { startPlay(); return; }
       const tt = play === 1 ? (performance.now() - p0t) / 1000 : 0;
       const tw = tt - T1e - HOLD;
-      if (play === 1 && !rel && tw >= T2 - REL) { rel = true; lock(false); const d = domeN - (sb.bottom - P - OV); if (Math.abs(d) > 0.5) { scrollBy({ top: d, behavior: "instant" }); return upd(); } }
+      if (play === 1 && !rel && tw >= T2 - REL) { rel = true; lock(false); const d = domeN - (sb.bottom - P - OV); dl(`rel d=${d.toFixed(1)} y=${scrollY.toFixed(0)}`); if (Math.abs(d) > 0.5) { scrollBy({ top: d, behavior: "instant" }); return upd(); } }
       if (play === 1 && tw >= T2) play = 2;
       const up = play === 1 ? uStart + (DP() - uStart) * (1 - Math.pow(1 - clamp(T1e > 0 ? tt / T1e : 1), 3)) : Math.min(DP(), Math.max(0, sR));
       const k = play === 1 ? clamp(tw / T2) : clamp((sR - DP()) / TD()); if (play !== 1) lastUp = up;
