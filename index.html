@@ -1277,13 +1277,14 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
       if (!on_ && performance.now() - lastWh < WGAP) { const q0 = performance.now();
         const chk = () => { const n = performance.now(); if (n - lastWh >= WGAP || n - q0 > QMAX) { lastWh = 0; lock(false); } else quietT = setTimeout(chk, 30); };
         quietT = setTimeout(chk, 30); return; }
-      const hs = document.documentElement.style; hs.overflow = on_ ? "hidden" : ""; hs.scrollbarGutter = on_ ? "stable" : "";
+      const hs = document.documentElement.style; hs.overflow = on_ ? "hidden" : ""; hs.scrollbarGutter = on_ ? "stable" : ""; hs.scrollBehavior = on_ ? "auto" : "";
       for (const ev of ["wheel", "touchmove"]) on_ ? addEventListener(ev, stopEv, { passive: false }) : removeEventListener(ev, stopEv, { passive: false });
       clearTimeout(lockT); if (on_) lockT = setTimeout(() => lock(false), (T2 + 1) * 1000); };
     const startPlay = () => { if (!on || play === 1) return; play = 1; rel = false; p0t = performance.now(); lock(true); uStart = lastUp; T1e = T1 * clamp(1 - uStart / DP());
-      t.style.translate = ""; const s0 = st.getBoundingClientRect().bottom + PRE() - (t.getBoundingClientRect().top + B - sF);
-      const y0 = scrollY, tgt = scrollY + (DP() + TD() - s0);
-      scrollTo({ top: tgt, behavior: "instant" }); dl(`play y0=${y0.toFixed(0)} tgt=${tgt.toFixed(0)} y=${scrollY.toFixed(0)}`); if (DBG) for (const ms of [50, 300, 800]) setTimeout(() => dl(`  +${ms}ms y=${scrollY.toFixed(0)}`), ms); upd(); };
+      const jump = () => { if (play !== 1 || rel) return; t.style.translate = ""; const s0 = st.getBoundingClientRect().bottom + PRE() - (t.getBoundingClientRect().top + B - sF);
+        const y0 = scrollY, tgt = Math.round(scrollY + (DP() + TD() - s0));
+        scrollTo({ top: tgt, behavior: "instant" }); dl(`play y0=${y0.toFixed(0)} tgt=${tgt.toFixed(0)} y=${scrollY.toFixed(0)}`); if (DBG) for (const ms of [50, 300, 800]) setTimeout(() => dl(`  +${ms}ms y=${scrollY.toFixed(0)}`), ms); upd(); };
+      requestAnimationFrame(() => requestAnimationFrame(jump)); upd(); };
     const DBG = /[?&]dbg/.test(location.search), dlog = [];
     const dl = (s) => { if (!DBG) return; dlog.push((performance.now() / 1000).toFixed(2) + " " + s); if (dlog.length > 9) dlog.shift(); };
     if (DBG) { const box = document.createElement("pre"); box.style.cssText = "position:fixed;left:6px;top:60px;z-index:99999;margin:0;padding:6px 8px;font:11px/1.35 ui-monospace,monospace;color:#7f7;background:rgba(0,0,0,.78);pointer-events:none;white-space:pre;border-radius:4px";
@@ -1305,7 +1306,9 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
       if (!on) play = 0; else if (play === 2 && sR < DP() * 0.5) play = 0; else if (play === 0 && sR >= DP() - 0.5) { startPlay(); return; }
       const tt = play === 1 ? (performance.now() - p0t) / 1000 : 0;
       const tw = tt - T1e - HOLD;
-      if (play === 1 && !rel && tw >= T2 - REL) { rel = true; lock(false); const d = domeN - (sb.bottom - P - OV); dl(`rel d=${d.toFixed(1)} y=${scrollY.toFixed(0)}`); if (Math.abs(d) > 0.5) { scrollBy({ top: d, behavior: "instant" }); return upd(); } }
+      if (play === 1 && !rel && tw >= T2 - REL) { rel = true; const d = domeN - (sb.bottom - P - OV); dl(`rel d=${d.toFixed(1)} y=${scrollY.toFixed(0)}`);
+        requestAnimationFrame(() => requestAnimationFrame(() => { lock(false); dl(`unlock y=${scrollY.toFixed(0)}`); }));
+        if (Math.abs(d) > 0.5) { scrollBy({ top: d, behavior: "instant" }); return upd(); } }
       if (play === 1 && tw >= T2) play = 2;
       const up = play === 1 ? uStart + (DP() - uStart) * (1 - Math.pow(1 - clamp(T1e > 0 ? tt / T1e : 1), 3)) : Math.min(DP(), Math.max(0, sR));
       const k = play === 1 ? clamp(tw / T2) : clamp((sR - DP()) / TD()); if (play !== 1) lastUp = up;
