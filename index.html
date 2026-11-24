@@ -356,7 +356,8 @@ h3 { font-size: 22px; line-height: 1.4; margin: 0; font-weight: 700; }
 .thumb-body { margin: 14px auto 0; max-width: 40em; padding: 0 20px; color: #9c9ca1; font-size: clamp(14px, 1.25vw, 16px); font-weight: 500; line-height: 1.6; letter-spacing: .04em; font-feature-settings: "palt"; word-break: keep-all; overflow-wrap: anywhere; }
 .thumb-body .nb { white-space: nowrap; }
 .thumb-fig .tp { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-.thumb-fig .tp .pk { position: absolute; background: center / 100% 100% no-repeat; opacity: 0; transition: opacity .16s ease-out; }
+div.tp { will-change: transform; contain: strict; }
+.thumb-fig .tp .pk { position: absolute; background: center / 100% 100% no-repeat; opacity: 0; transition: opacity .16s ease-out; will-change: opacity; }
 .thumb-fig .tp .pk.down { opacity: 1; transition: opacity .05s ease-in; }
 .thumb-fig .tp .w { opacity: 0; transform-box: fill-box; transform-origin: center; }
 .thumb-fig .tp .w.go { animation: tpRip 1s cubic-bezier(.2, .7, .3, 1) forwards; } .thumb-fig .tp .w.go.d2 { animation-delay: .16s; }
@@ -846,7 +847,12 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
     };
     make(fig, fig.querySelector(".grip"), 0);
     make(thr, null, 1);
-    const restart = (e) => { e.classList.remove("go"); void e.getBoundingClientRect(); e.classList.add("go"); };
+    const RIP = [{ opacity: .9, transform: "scale(.35)" }, { opacity: 0, transform: "scale(1.55)" }], DOT = [{ opacity: 0, transform: "scale(.4)" }, { opacity: .5, transform: "scale(1)", offset: .4 }, { opacity: 0, transform: "scale(1)" }];
+    const restart = (e) => {
+      if (e._a) e._a.cancel();
+      e._a = e.classList.contains("dt") ? e.animate(DOT, { duration: 500, easing: "ease-out", fill: "forwards" })
+        : e.animate(RIP, { duration: 1000, delay: e.classList.contains("d2") ? 160 : 0, easing: "cubic-bezier(.2, .7, .3, 1)", fill: "forwards" });
+    };
     let timers = [], vis = false, running = false, first = true;
     const later = (ms, f) => timers.push(setTimeout(f, ms));
     const ripple = (i) => sets.forEach((s) => { restart(s.dts[i]); s.ws[i].forEach(restart); });
