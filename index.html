@@ -1352,7 +1352,7 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
       OV = innerWidth >= 768 ? OV_SP * w / OV_W : OV_SP;
       im.style.width = w + "px"; im.style.height = (w * IMG_AR) + "px";
       clip();
-      lip.style.bottom = `calc(${Math.max(18, Math.round(P * 0.4))}px + env(safe-area-inset-bottom, 0px))`; };
+      lip.dataset.fb = `calc(${Math.max(18, Math.round(P * 0.4))}px + env(safe-area-inset-bottom, 0px))`; if (lipOff === null) lip.style.bottom = lip.dataset.fb; };
     const reachOf = (cx, cy, side) => { const w = innerWidth, h = innerHeight, toSide = Math.asin(Math.min(1, ((side < 0 ? cx : w - cx) + 30) / R)), cb = (cy - h - 30) / R;
       return Math.max(0.02, Math.min(toSide, cb < 1 ? Math.acos(Math.max(-1, cb)) : 0)); };
     const T2 = 2.2;
@@ -1423,10 +1423,13 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
       else { t.style.removeProperty("--cone"); t.style.removeProperty("--cone2"); }
       { const dome = play === 1 && !rel ? apexEnd : Math.min(domeN, apexEnd), D = 180 / Math.PI, rL = reachOf(ax, apexEnd + R, -1) * D, rR = reachOf(ax, apexEnd + R, 1) * D, wp = wipeAt(kS, rL, rR);
         drawBeam(wp.bt, wp.bh, on && kS > 0 && kS < 1 && wp.bh - wp.bt > 0.05 ? 1 : 0, ax, dome, wp.wt, wp.wh); }
-      { const vis = on && play === 2 && kS > 0.99, hTop = th ? th.getBoundingClientRect().top : innerHeight, lb = lip.getBoundingClientRect(), base = lb.bottom - (parseFloat(lip.dataset.dy) || 0);
-        if (!vis) lipOff = null; else if (lipOff === null) lipOff = hTop - base;
-        const dy = lipOff === null ? 0 : Math.min(0, hTop - lipOff - base);
-        lip.dataset.dy = dy; lip.style.transform = dy ? `translateY(${dy.toFixed(1)}px)` : ""; lip.style.opacity = vis ? 1 : 0; }
+      { const vis = on && play === 2 && kS > 0.99;
+        if (vis && lipOff === null) {
+          lip.style.position = ""; lip.style.top = ""; lip.style.bottom = lip.dataset.fb || ""; lip.style.transform = "";
+          lipOff = t.getBoundingClientRect().top - lip.getBoundingClientRect().top;
+        } else if (!vis) lipOff = null;
+        if (lipOff !== null) { lip.style.position = "absolute"; lip.style.bottom = "auto"; lip.style.top = (t.getBoundingClientRect().top + scrollY - lipOff).toFixed(1) + "px"; }
+        lip.style.opacity = vis ? 1 : 0; }
       { const show = on && play === 2 && kS >= 1 && domeN < innerHeight - 1; fsv.style.display = show ? "" : "none";
         if (show) { fsv.setAttribute("viewBox", `0 0 ${innerWidth} ${innerHeight}`); fsv.setAttribute("width", innerWidth); fsv.setAttribute("height", innerHeight); fph.setAttribute("d", filPath(ax, domeN + R, innerHeight)); } }
     };
