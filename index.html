@@ -881,7 +881,7 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
       running = true;
       for (let i = 0; i < 3; i++) later(i * STEP, () => press(i));
       later(3 * STEP, spin);
-      later(3 * STEP + BALL_MS + REST, cycle);
+      later(4 * STEP, cycle);
     };
     new IntersectionObserver((es) => {
       vis = es.some((e) => e.isIntersecting);
