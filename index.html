@@ -72,7 +72,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--left); outline-
 .nav-dark.on-thumb { -webkit-mask-image: none; mask-image: none; clip-path: inset(var(--cut-top, 0px) 0 var(--cut, 0px) 0); }
 .nav-dark .shop { visibility: hidden; }
 .nav .shop { position: relative; z-index: 2; }
-.nav-dark a.hov { color: var(--left); }
+#top { scroll-margin-top: var(--nav-h, 46px); }
+.nav-dark a.hov:not(.brand) { color: var(--left); }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; white-space: nowrap; }
 .brand img.bm { display: block; height: 22px; width: auto; }
 .brand img.bm-w, .nav-dark .brand img.bm-c { display: none; }
@@ -486,7 +487,7 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
     d.querySelectorAll("a").forEach((a) => { a.removeAttribute("href"); a.tabIndex = -1; });
     nav.after(d);
     const real = nav.querySelectorAll("a"), fake = d.querySelectorAll("a");
-    real.forEach((a, i) => { a.addEventListener("mouseenter", () => fake[i].classList.add("hov")); a.addEventListener("mouseleave", () => fake[i].classList.remove("hov")); });
+    real.forEach((a, i) => { a.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") fake[i].classList.add("hov"); }); a.addEventListener("pointerleave", () => fake[i].classList.remove("hov")); });
   })();
 </script>
 <main id="top">
