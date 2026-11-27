@@ -77,6 +77,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--left); outline-
 .brand img.bm { display: block; height: 22px; width: auto; }
 .brand img.bm-w, .nav-dark .brand img.bm-c { display: none; }
 .nav-dark .brand img.bm-w { display: block; }
+.brand .bt { font-size: 16px; line-height: 1; margin-left: -1px; }
+.brand .bt-en { font-size: 11px; line-height: 1; font-weight: 700; letter-spacing: .04em; margin-left: -3px; color: color-mix(in srgb, currentColor 58%, transparent); }
 .nav ul { display: flex; align-items: center; gap: 22px; list-style: none; margin: 0; padding: 0; font-size: 14px; font-weight: 500; }
 .nav ul a { text-decoration: none; }
 .nav ul a:hover { color: var(--left); }
@@ -465,7 +467,7 @@ footer { background: var(--ink); color: var(--band-fg); padding-block: 56px 40px
 </style>
 <div class="wrap nav-shell">
   <nav class="nav" aria-label="メインメニュー">
-    <a class="brand" href="#top" aria-label="小人キー"><img class="bm bm-c" src="icons/logo-color.png" width="116" height="88" alt=""><img class="bm bm-w" src="icons/logo-white.png" width="116" height="88" alt=""></a>
+    <a class="brand" href="#top"><img class="bm bm-c" src="icons/logo-color.png" width="116" height="88" alt=""><img class="bm bm-w" src="icons/logo-white.png" width="116" height="88" alt=""><span class="bt">小人キー</span><span class="bt-en">KobitoKey</span></a>
     <ul>
       <li><a class="shop" data-buy href="https://iikagen-11.booth.pm/items/7511676" target="_blank" rel="noopener">購入</a></li>
     </ul>
